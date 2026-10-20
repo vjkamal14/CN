@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CN Lab Master v2 — Manual + Output Diagrams (SCSB2501)</title>
+    <style>
+        :root {
+            --bg: #f0f4f8;
+            --card: #fff;
+            --txt: #1a202c;
+            --sub: #4a5568;
+            --pri: #2563eb;
+            --ok: #16a34a;
+            --border: #e2e8f0;
+            --term: #0a0a0a;
+            --termtx: #d4d4d4;
+            --termpri: #4ade80
+        }
+
+        body.dark {
+            --bg: #0b1120;
+            --card: #111a2e;
+            --txt: #e2e8f0;
+            --sub: #94a3b8;
+            --border: #1e293b;
+            --term: #000
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--txt);
+            transition: .3s
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb, #0ea5e9);
+            color: #fff;
+            padding: 24px 16px;
+            text-align: center
+        }
+
+        header h1 {
+            font-size: 1.4rem
+        }
+
+        header p {
+            opacity: .9;
+            font-size: .85rem;
+            margin-top: 4px
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--card);
+            border-bottom: 2px solid var(--border);
+            padding: 10px 16px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center
+        }
+
+        #search {
+            flex: 1;
+            min-width: 170px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            background: var(--bg);
+            color: var(--txt);
+            font-size: 1rem
+        }
+
+        .btn {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: none;
+            background: var(--pri);
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600
+        }
+
+        .btn.ghost {
+            background: transparent;
+            color: var(--txt);
+            border: 2px solid var(--border)
+        }
+
+        .progwrap {
+            padding: 12px 16px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border)
+        }
+
+        .pbar {
+            height: 10px;
+            background: var(--border);
+            border-radius: 99px;
+            overflow: hidden
+        }
+
+        .pfill {
+            height: 100%;
+            background: linear-gradient(90deg, #16a34a, #22c55e);
+            width: 0%;
+            transition: .4s
+        }
+
+        .ptxt {
+            font-size: .85rem;
+            color: var(--sub);
+            margin-top: 6px
+        }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 16px
+        }
+
+        .exp {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin: 14px 0;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .06)
+        }
+
+        .ehead {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px;
+            cursor: pointer;
+            user-select: none
+        }
+
+        .ehead:hover {
+            background: rgba(37, 99, 235, .06)
+        }
+
+        .num {
+            background: var(--pri);
+            color: #fff;
+            min-width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0
+        }
+
+        .ehead h3 {
+            flex: 1;
+            font-size: .95rem;
+            line-height: 1.3
+        }
+
+        .arrow {
+            transition: .3s;
+            color: var(--sub)
+        }
+
+        .ebody {
+            display: none;
+            padding: 0 16px 16px;
+            border-top: 1px solid var(--border)
+        }
+
+        .exp.open .ebody {
+            display: block
+        }
+
+        .exp.open .arrow {
+            transform: rotate(180deg)
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: .7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 99px;
+            margin: 2px 4px 2px 0
+        }
+
+        .t-easy {
+            background: #dcfce7;
+            color: #166534
+        }
+
+        .t-med {
+            background: #fef9c3;
+            color: #854d0e
+        }
+
+        .t-hard {
+            background: #fee2e2;
+            color: #991b1b
+        }
+
+        .t-th {
+            background: #e0e7ff;
+            color: #3730a3
+        }
+
+        .t-out {
+            background: #ffedd5;
+            color: #9a3412
+        }
+
+        body.dark .t-easy {
+            background: #052e16;
+            color: #86efac
+        }
+
+        body.dark .t-med {
+            background: #422006;
+            color: #fde047
+        }
+
+        body.dark .t-hard {
+            background: #450a0a;
+            color: #fca5a5
+        }
+
+        body.dark .t-th {
+            background: #1e1b4b;
+            color: #a5b4fc
+        }
+
+        body.dark .t-out {
+            background: #431407;
+            color: #fdba74
+        }
+
+        .ebody h4 {
+            margin: 13px 0 6px;
+            color: var(--pri);
+            font-size: .85rem;
+            text-transform: uppercase;
+            letter-spacing: .5px
+        }
+
+        .ebody p,
+        .ebody li {
+            font-size: .9rem;
+            line-height: 1.5;
+            color: var(--txt)
+        }
+
+        .ebody ul {
+            padding-left: 20px;
+            margin: 4px 0
+        }
+
+        .cmd,
+        .term,
+        .topo,
+        .steps {
+            position: relative;
+            margin: 10px 0
+        }
+
+        .cmd pre {
+            background: var(--term);
+            color: var(--termtx);
+            padding: 14px 14px 14px 16px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-size: .83rem;
+            line-height: 1.5;
+            font-family: ui-monospace, Consolas, monospace
+        }
+
+        .term pre {
+            background: var(--term);
+            color: var(--termtx);
+            padding: 14px;
+            border-radius: 10px;
+            border-left: 4px solid #22c55e;
+            overflow-x: auto;
+            font-size: .8rem;
+            line-height: 1.5;
+            font-family: ui-monospace, Consolas, monospace;
+            white-space: pre
+        }
+
+        .term::before {
+            content: "🖥️ OUTPUT WINDOW — must look like this";
+            display: block;
+            font-size: .7rem;
+            font-weight: 700;
+            color: #22c55e;
+            background: var(--term);
+            padding: 6px 14px 0;
+            border-radius: 10px 10px 0 0;
+            font-family: inherit
+        }
+
+        .topo pre {
+            background: #1e293b;
+            color: #7dd3fc;
+            padding: 14px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-size: .78rem;
+            line-height: 1.45;
+            font-family: ui-monospace, Consolas, monospace;
+            text-align: center;
+            white-space: pre
+        }
+
+        .topo::before {
+            content: "🗺️ TOPOLOGY";
+            display: block;
+            font-size: .7rem;
+            font-weight: 700;
+            color: #7dd3fc;
+            background: #1e293b;
+            padding: 6px 14px 0;
+            border-radius: 10px 10px 0 0
+        }
+
+        .steps {
+            background: rgba(255, 122, 0, .08);
+            border: 1px solid #fb923c;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: .88rem
+        }
+
+        .steps ol {
+            padding-left: 22px
+        }
+
+        .steps li {
+            margin: 5px 0
+        }
+
+        .steps b {
+            color: #ea580c
+        }
+
+        .copy {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 5px 10px;
+            font-size: .72rem;
+            border: none;
+            border-radius: 6px;
+            background: #2563eb;
+            color: #fff;
+            cursor: pointer;
+            opacity: .85;
+            z-index: 2
+        }
+
+        .copy:hover {
+            opacity: 1
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+            font-size: .83rem
+        }
+
+        th,
+        td {
+            border: 1px solid var(--border);
+            padding: 6px 8px;
+            text-align: left
+        }
+
+        th {
+            background: rgba(37, 99, 235, .1)
+        }
+
+        .tip {
+            background: rgba(22, 163, 74, .08);
+            border-left: 4px solid var(--ok);
+            padding: 9px 12px;
+            border-radius: 0 8px 8px 0;
+            margin: 9px 0;
+            font-size: .85rem
+        }
+
+        .warn {
+            background: rgba(234, 179, 8, .1);
+            border-left: 4px solid #eab308;
+            padding: 9px 12px;
+            border-radius: 0 8px 8px 0;
+            margin: 9px 0;
+            font-size: .85rem
+        }
+
+        .cheat {
+            background: linear-gradient(135deg, #312e81, #1e3a8a);
+            color: #fff;
+            border-radius: 12px;
+            padding: 18px;
+            margin: 20px 0
+        }
+
+        .cheat h3 {
+            margin-bottom: 8px
+        }
+
+        .cheat li {
+            font-size: .88rem;
+            margin: 6px 0
+        }
+
+        footer {
+            text-align: center;
+            color: var(--sub);
+            font-size: .78rem;
+            padding: 24px
+        }
+
+        @media(max-width:600px) {
+            .ehead h3 {
+                font-size: .85rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>🧪 CN Lab Master v2 — Manual + Output Guide</h1>
+        <p>SCSB2501 • 16 Experiments • Topology diagrams + exact steps + expected outputs</p>
+    </header>
+
+    <div class="topbar">
+        <input id="search" placeholder="🔍 Search… (vlan, ospf, vpn, arp…)">
+        <button class="btn ghost" onclick="toggleTheme()">🌙/☀️</button>
+        <button class="btn" onclick="toggleAll()">Expand/Collapse All</button>
+    </div>
+
+    <div class="progwrap">
+        <div class="pbar">
+            <div class="pfill" id="pfill"></div>
+        </div>
+        <div class="ptxt" id="ptxt">Progress: 0 / 16 — tick ✅ on each finished card!</div>
+    </div>
+
+    <main id="list">
+
+        <!-- EXP 1 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">1</span>
+                <h3>Simple LAN (2 PCs + Switch)</h3><label onclick="event.stopPropagation()"><input type="checkbox"
+                        class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-easy">⭐ EASY</span>
+                <h4>Aim</h4>
+                <p>Create a LAN with 2 PCs + 1 switch; verify with ping.</p>
+                <div class="topo">
+                    <pre>   [PC0]            [PC1]
+192.168.1.1     192.168.1.2
+      \             /
+       \           /
+      ┌──────────────┐
+      │   Switch0    │
+      │    (2960)    │
+      └──────────────┘
+     Fa0/1      Fa0/2</pre>
+                </div>
+                <h4>Build steps</h4>
+                <ul>
+                    <li>Drag 2 PCs + Switch 2960 → connect <b>copper straight-through</b>: PC0 Fa0↔Fa0/1, PC1 Fa0↔Fa0/2
+                    </li>
+                    <li>PC IPs: 192.168.1.1 &amp; .2, mask 255.255.255.0</li>
+                </ul>
+                <div class="steps"><b>📸 How to get the OUTPUT (screenshot #1):</b>
+                    <ol>
+                        <li>Click <b>PC0 → Desktop → Command Prompt</b></li>
+                        <li>Type: <b>ping 192.168.1.2</b> → Enter</li>
+                        <li>4 replies appear → take screenshot</li>
+                    </ol>
+                </div>
+                <div class="term">
+                    <pre>C:\&gt;ping 192.168.1.2
+
+Pinging 192.168.1.2 with 32 bytes of data:
+
+Reply from 192.168.1.2: bytes=32 time&lt;1ms TTL=128
+Reply from 192.168.1.2: bytes=32 time&lt;1ms TTL=128
+Reply from 192.168.1.2: bytes=32 time&lt;1ms TTL=128
+Reply from 192.168.1.2: bytes=32 time&lt;1ms TTL=128
+
+Ping statistics for 192.168.1.2:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)</pre>
+                </div>
+                <div class="tip">💡 If "Request timed out" ×4 → check cables are green &amp; IPs are correct. TTL=128
+                    means it came from another PC (Windows).</div>
+                <p><b>Result:</b> LAN created; PCs communicated through switch.</p>
+            </div>
+        </div>
+
+        <!-- EXP 2 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">2</span>
+                <h3>1a — IP Address + Time/Date Server (NTP)</h3><label onclick="event.stopPropagation()"><input
+                        type="checkbox" class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-easy">⭐ EASY</span>
+                <h4>Aim</h4>
+                <p>Find PC's IP (ipconfig) and get server time/date via NTP.</p>
+                <div class="topo">
+                    <pre>[PC0]──[Switch0]──[Router0]
+           │        Gi0/0
+       [Server0]    192.168.1.1
+       192.168.1.100
+       (NTP service: ON)</pre>
+                </div>
+                <h4>Build steps</h4>
+                <ul>
+                    <li>PC=.10, Server=.100, Router Gi0/0=.1, all straight-through</li>
+                    <li>Server → <b>Services → NTP → ON</b> + set time</li>
+                    <li>PC gateway = 192.168.1.1</li>
+                </ul>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy</button>
+                    <pre>enable
+configure terminal
+interface gigabitEthernet 0/0
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+ntp server 192.168.1.100
+end</pre>
+                </div>
+                <div class="steps"><b>📸 How to get the OUTPUT (3 screenshots):</b>
+                    <ol>
+                        <li>Router CLI → type <b>show ntp status</b> → screenshot (must say "synchronized")</li>
+                        <li>Type <b>show clock</b> → screenshot (date/time)</li>
+                        <li>PC0 → Command Prompt → <b>ipconfig</b> → screenshot</li>
+                    </ol>
+                </div>
+                <div class="term">
+                    <pre>Router#show ntp status
+Clock is synchronized, stratum 2, reference is 192.168.1.100
+nominal freq is 250.0000 Hz, actual freq is 249.9990 Hz
+reference time is EBDB5DFB.0000028A (20:50:3.650 UTC Tue Jun 24 2025)
+
+Router#show clock
+20:50:34.362 UTC Tue Jun 24 2025</pre>
+                </div>
+                <div class="term">
+                    <pre>C:\&gt;ipconfig
+
+FastEthernet0 Connection:(default port)
+   Link-local IPv6 Address.........: FE80::230:F2FF:FE87:8557
+   IP Address......................: 192.168.1.10
+   Subnet Mask.....................: 255.255.255.0
+   Default Gateway.................: 192.168.1.1</pre>
+                </div>
+                <div class="warn">⚠️ "Clock is not synchronized"? → NTP service OFF on server, or forgot "no shutdown",
+                    or wrong IP .100</div>
+                <p><b>Result:</b> IP obtained via ipconfig; server time/date obtained via NTP.</p>
+            </div>
+        </div>
+
+        <!-- EXP 3 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">3</span>
+                <h3>1B — Hybrid Topology (Star + Bus)</h3><label onclick="event.stopPropagation()"><input
+                        type="checkbox" class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-med">⭐⭐ MEDIUM</span>
+                <h4>Aim</h4>
+                <p>Hybrid (star+bus): 2 routers, 2 switches, 6 PCs; end-to-end ping.</p>
+                <div class="topo">
+                    <pre> [PC0][PC1][PC2]              [PC3][PC4][PC5]
+ .2  .3  .4 │                    │ .2  .3  .4
+        ┌───┴───┐            ┌───┴───┐
+        │Switch0│            │Switch1│
+        └───┬───┘            └───┬───┘
+            │ Gi0/0/0            │ Gi0/0/0
+      ┌─────┴─────┐  10.0.0.0/30  ┌─┴─────────┐
+      │ Router0   │═══════════════│ Router1   │
+      │ 10.0.0.1  │  Gi0/0/1 link │ 10.0.0.2  │
+      └───────────┘               └───────────┘
+      GW: 192.168.1.1             GW: 192.168.2.1</pre>
+                </div>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — Router0</button>
+                    <pre>enable
+configure terminal
+interface GigabitEthernet0/0/0
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+interface GigabitEthernet0/0/1
+ip address 10.0.0.1 255.255.255.252
+no shutdown
+end
+configure terminal
+ip route 192.168.2.0 255.255.255.0 10.0.0.2</pre>
+                </div>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — Router1</button>
+                    <pre>enable
+configure terminal
+interface GigabitEthernet0/0/0
+ip address 192.168.2.1 255.255.255.0
+no shutdown
+interface GigabitEthernet0/0/1
+ip address 10.0.0.2 255.255.255.252
+no shutdown
+end
+configure terminal
+ip route 192.168.1.0 255.255.255.0 10.0.0.1</pre>
+                </div>
+                <div class="steps"><b>📸 How to get the OUTPUT:</b>
+                    <ol>
+                        <li>All 6 PCs: set IP + <b>gateway</b> (PC0–2 gw .1.1, PC3–5 gw .2.1)</li>
+                        <li>PC0 → Command Prompt → <b>ping 192.168.2.4</b></li>
+                        <li>1st ping = 1 timeout (normal!) → ping again = 0% loss → screenshot</li>
+                        <li>Optional bonus screenshot: Router0 → <b>show ip route</b></li>
+                    </ol>
+                </div>
+                <div class="term">
+                    <pre>C:\&gt;ping 192.168.2.4
+
+Pinging 192.168.2.4 with 32 bytes of data:
+
+Request timed out.
+Reply from 192.168.2.4: bytes=32 time=1ms TTL=126
+Reply from 192.168.2.4: bytes=32 time=1ms TTL=126
+Reply from 192.168.2.4: bytes=32 time&lt;1ms TTL=126
+
+Ping statistics for 192.168.2.4:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss)</pre>
+                </div>
+                <div class="tip">💡 TTL=126 = crossed 2 routers (128−2). The timeout is ARP learning — mention in viva!
+                </div>
+                <p><b>Result:</b> Hybrid topology created; different LANs communicated via routers.</p>
+            </div>
+        </div>
+
+        <!-- EXP 4 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">4</span>
+                <h3>1C — Wireshark Traffic Monitor</h3><label onclick="event.stopPropagation()"><input type="checkbox"
+                        class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-easy">⭐ EASY</span><span class="tag t-th">TOOL</span>
+                <h4>Aim</h4>
+                <p>Capture &amp; analyse packets with Wireshark.</p>
+                <div class="topo">
+                    <pre>┌─ Wireshark ─────────────────────────────────┐
+│ Filter: [ http            ]    ↵Apply       │
+│ No.  Time   Source        Destination  Info │
+│ 1    0.000  192.168.0.10  192.168.0.1  SYN  │
+│ 2    0.001  192.168.0.1   192.168.0.10 SYN·ACK│
+│ 3    0.002  192.168.0.10  192.168.0.1  ACK  │
+│ 4    0.003  192.168.0.10  192.168.0.1  HTTP GET│
+│ ▓▓ packet details: Ethernet▸IP▸TCP layers   │
+└─────────────────────────────────────────────┘</pre>
+                </div>
+                <div class="steps"><b>📸 How to get the OUTPUT (screenshot #1):</b>
+                    <ol>
+                        <li>Open <b>Wireshark as Administrator</b> → interface list appears</li>
+                        <li>Active interface = one with <b>live traffic graph</b> → double-click → capture starts</li>
+                        <li>Open a website in browser (generates packets)</li>
+                        <li>In filter bar type <b>http</b> → Enter → only HTTP packets shown</li>
+                        <li>Click one packet → middle pane shows <b>Ethernet▸IP▸TCP layers</b> + flags (SYN/ACK)</li>
+                        <li><b>Screenshot</b> → red square = Stop → File▸Save As → <b>.pcap</b></li>
+                    </ol>
+                </div>
+                <h4>Filters (memorize 2+)</h4>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy</button>
+                    <pre>http                    → only HTTP
+ip.addr == 192.168.0.1  → traffic to/from that IP
+tcp.port == 80          → port 80 traffic
+dns                     → only DNS queries</pre>
+                </div>
+                <div class="tip">💡 Viva: first 3 packets = TCP 3-way handshake (SYN → SYN-ACK → ACK).</div>
+                <p><b>Result:</b> Traffic captured &amp; analysed.</p>
+            </div>
+        </div>
+
+        <!-- EXP 5 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">5</span>
+                <h3>2A — LAN with 3 PCs</h3><label onclick="event.stopPropagation()"><input type="checkbox" class="done"
+                        onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-easy">⭐ EASY</span>
+                <h4>Aim</h4>
+                <p>LAN with 3 PCs via switch; verify with ping.</p>
+                <div class="topo">
+                    <pre>[PC0].1  [PC1].2  [PC2].3
+    │       │       │
+   Fa0/1  Fa0/2  Fa0/3
+    └───────┼───────┘
+       [Switch0]
+        ---- LAN</pre>
+                </div>
+                <div class="steps"><b>📸 How to get the OUTPUT:</b>
+                    <ol>
+                        <li>Set IPs: PC0=192.168.1.1, PC1=.1.2, PC2=.1.3 (mask .0)</li>
+                        <li>PC0 → Command Prompt → <b>ping 192.168.1.2</b> → screenshot</li>
+                        <li>Then <b>ping 192.168.1.3</b> → screenshot</li>
+                        <li>Repeat from PC1 → <b>ping 192.168.1.1</b></li>
+                    </ol>
+                </div>
+                <div class="term">
+                    <pre>C:\&gt;ping 192.168.1.2
+Reply from 192.168.1.2: bytes=32 time&lt;1ms TTL=128
+Reply from 192.168.1.2: bytes=32 time&lt;1ms TTL=128
+Reply from 192.168.1.2: bytes=32 time&lt;1ms TTL=128
+Reply from 192.168.1.2: bytes=32 time&lt;1ms TTL=128
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+
+C:\&gt;ping 192.168.1.3
+Reply from 192.168.1.3: bytes=32 time&lt;1ms TTL=128
+(×4 replies — 0% loss)</pre>
+                </div>
+                <table>
+                    <tr>
+                        <th>From PC</th>
+                        <th>To IP</th>
+                        <th>Result</th>
+                    </tr>
+                    <tr>
+                        <td>PC0</td>
+                        <td>192.168.1.2</td>
+                        <td>Success</td>
+                    </tr>
+                    <tr>
+                        <td>PC0</td>
+                        <td>192.168.1.3</td>
+                        <td>Success</td>
+                    </tr>
+                    <tr>
+                        <td>PC1</td>
+                        <td>192.168.1.1</td>
+                        <td>Success</td>
+                    </tr>
+                </table>
+                <p><b>Result:</b> All PCs connected in LAN via switch.</p>
+            </div>
+        </div>
+
+        <!-- EXP 6 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">6</span>
+                <h3>2B — VPN / IPSec (Site-to-Site)</h3><label onclick="event.stopPropagation()"><input type="checkbox"
+                        class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-hard">⭐⭐⭐⭐ HARDEST</span>
+                <h4>Aim</h4>
+                <p>Site-to-site IPSec VPN between 2 branches over ISP.</p>
+                <div class="topo">
+                    <pre>[PC1]────[Router1]═══S═══[ ISP ]═══S═══[Router2]────[PC2]
+ .1.10      │ 10.0.0.1      │              │ 10.0.0.6    .2.10
+            │            10.0.0.2        10.0.0.5
+        192.168.1.1  └── WAN 10.0.0.0/30 ──┘  192.168.2.1
+        (Branch A)                          (Branch B)
+═══S═══ = Serial DCE cable (clock side: Router1 &amp; Router2)</pre>
+                </div>
+                <div class="warn">⚠️ 3× <b>1941 routers</b> + add <b>HWIC-2T</b> module to all 3 (Physical→power
+                    OFF→drag module→ON). Serial links stay RED until IPs+clock rate are set — that's normal!</div>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — Router1</button>
+                    <pre>enable
+configure terminal
+interface FastEthernet0/0
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+interface Serial0/0/0
+ip address 10.0.0.1 255.255.255.252
+clock rate 64000
+no shutdown
+exit
+ip route 192.168.2.0 255.255.255.0 10.0.0.2
+crypto isakmp policy 10
+encryption aes
+hash sha
+authentication pre-share
+group 2
+lifetime 86400
+exit
+crypto isakmp key cisco123 address 10.0.0.6
+crypto ipsec transform-set MYSET esp-aes esp-sha-hmac
+crypto map MYMAP 10 ipsec-isakmp
+set peer 10.0.0.6
+set transform-set MYSET
+match address 101
+exit
+access-list 101 permit ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255
+interface Serial0/0/0
+crypto map MYMAP
+end</pre>
+                </div>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — ISP</button>
+                    <pre>enable
+configure terminal
+interface Serial0/0/0
+ip address 10.0.0.2 255.255.255.252
+no shutdown
+interface Serial0/0/1
+ip address 10.0.0.5 255.255.255.252
+no shutdown
+end</pre>
+                </div>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — Router2</button>
+                    <pre>enable
+configure terminal
+interface FastEthernet0/0
+ip address 192.168.2.1 255.255.255.0
+no shutdown
+interface Serial0/0/0
+ip address 10.0.0.6 255.255.255.252
+clock rate 64000
+no shutdown
+exit
+ip route 192.168.1.0 255.255.255.0 10.0.0.5
+crypto isakmp policy 10
+encryption aes
+hash sha
+authentication pre-share
+group 2
+lifetime 86400
+exit
+crypto isakmp key cisco123 address 10.0.0.1
+crypto ipsec transform-set MYSET esp-aes esp-sha-hmac
+crypto map MYMAP 10 ipsec-isakmp
+set peer 10.0.0.1
+set transform-set MYSET
+match address 101
+exit
+access-list 101 permit ip 192.168.2.0 0.0.0.255 192.168.1.0 0.0.0.255
+interface Serial0/0/0
+crypto map MYMAP
+end</pre>
+                </div>
+                <div class="steps"><b>📸 How to get the OUTPUT (2 screenshots):</b>
+                    <ol>
+                        <li>PC1 → Command Prompt → <b>ping 192.168.2.10</b> → 1st ping mostly timeouts (tunnel
+                            negotiating, ~30s) → <b>ping again</b> → 4 replies → screenshot</li>
+                        <li>Router1 CLI → <b>show crypto isakmp sa</b> → must show <b>QM_IDLE + ACTIVE</b> → screenshot
+                            🏆</li>
+                    </ol>
+                </div>
+                <div class="term">
+                    <pre>Router1#show crypto isakmp sa
+
+dst             src             state          conn-id slot status
+10.0.0.6        10.0.0.1        QM_IDLE           1001    0 ACTIVE
+
+C:\&gt;ping 192.168.2.10
+Request timed out.
+Reply from 192.168.2.10: bytes=32 time=2ms TTL=125
+Reply from 192.168.2.10: bytes=32 time=2ms TTL=125
+Reply from 192.168.2.10: bytes=32 time=2ms TTL=125
+Packets: Sent = 4, Received = 3, Lost = 1 (25% loss)</pre>
+                </div>
+                <div class="tip">💡 QM_IDLE+ACTIVE = tunnel UP. TTL=125 = 3 hops (128−3). ISAKMP=Internet Security
+                    Association &amp; Key Mgmt Protocol. ACL 101 = "interesting traffic" that gets encrypted.</div>
+                <p><b>Result:</b> VPN configured; secure communication verified.</p>
+            </div>
+        </div>
+
+        <!-- EXP 7 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">7</span>
+                <h3>2C — Ethernet Connection (PC↔Router)</h3><label onclick="event.stopPropagation()"><input
+                        type="checkbox" class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-easy">⭐ EASY</span>
+                <h4>Aim</h4>
+                <p>PC↔Router Ethernet link, verified by ping.</p>
+                <div class="topo">
+                    <pre>        [Router0]
+        Gi0/0 = 192.168.1.1
+            │
+            │ crossover
+            │ (or straight if accepted)
+            │
+        Fa0 = 192.168.1.2
+        [PC0]  GW: 192.168.1.1</pre>
+                </div>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — Router</button>
+                    <pre>enable
+configure terminal
+interface gig0/0
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+end</pre>
+                </div>
+                <div class="steps"><b>📸 How to get the OUTPUT:</b>
+                    <ol>
+                        <li>PC → Desktop → IP Config: IP <b>192.168.1.2</b>, mask .0, GW <b>192.168.1.1</b></li>
+                        <li>Command Prompt → <b>ping 192.168.1.1</b> → screenshot</li>
+                    </ol>
+                </div>
+                <div class="term">
+                    <pre>C:\&gt;ping 192.168.1.1
+
+Pinging 192.168.1.1 with 32 bytes of data:
+
+Reply from 192.168.1.1: bytes=32 time=1ms TTL=255
+Reply from 192.168.1.1: bytes=32 time&lt;1ms TTL=255
+Reply from 192.168.1.1: bytes=32 time&lt;1ms TTL=255
+Reply from 192.168.1.1: bytes=32 time&lt;1ms TTL=255
+
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)</pre>
+                </div>
+                <div class="warn">⚠️ TTL=255 = the ROUTER itself replied. No reply → forgot <b>no shutdown</b>! (port
+                    stays down)</div>
+                <p><b>Result:</b> Ethernet connection established &amp; verified.</p>
+            </div>
+        </div>
+
+        <!-- EXP 8 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">8</span>
+                <h3>2D — VLAN &amp; VLAN Trunk</h3><label onclick="event.stopPropagation()"><input type="checkbox"
+                        class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-med">⭐⭐⭐ MEDIUM</span><span class="tag t-th">EXAM FAVORITE</span>
+                <h4>Aim</h4>
+                <p>Configure VLANs 10/20 + trunk; verify.</p>
+                <div class="topo">
+                    <pre>[PC1][PC2][PC3]          [PC4]
+ VLAN 10 (Faculty)     VLAN 20 (Students)
+    │    │    │           │
+   Fa0/2 Fa0/3 Fa0/4    Fa0/5
+    └─────┼────┘           │
+     ┌────┴────────────────┴──┐
+     │ SW1 Gi0/1 ══TRUNK══ Gi0/1 SW2 │
+     └────────────────────────┘
+     ══ trunk = 802.1Q, carries VLAN 10,20 ══</pre>
+                </div>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — VLANs+Access (each switch)</button>
+                    <pre>enable
+configure terminal
+vlan 10
+name Faculty
+exit
+vlan 20
+name Students
+exit
+interface range fa0/2-4
+switchport mode access
+switchport access vlan 10
+exit
+interface fa0/5
+switchport mode access
+switchport access vlan 20
+exit</pre>
+                </div>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — Trunk (BOTH ends!)</button>
+                    <pre>interface g0/1
+switchport mode trunk
+switchport trunk encapsulation dot1q
+switchport nonegotiate
+switchport trunk allowed vlan 10,20
+exit
+copy run start</pre>
+                </div>
+                <div class="steps"><b>📸 How to get the OUTPUT (2 screenshots):</b>
+                    <ol>
+                        <li>Switch CLI → <b>show vlan brief</b> → screenshot (VLAN 10 &amp; 20 visible with ports)</li>
+                        <li>Then → <b>show interfaces trunk</b> → screenshot (Gig0/1 trunking 802.1q, allowed 10,20)
+                        </li>
+                        <li>Bonus: PC(VLAN10) ping PC(VLAN10)=✔ success; PC(VLAN10)→PC(VLAN20)= ✖ needs router (viva
+                            point!)</li>
+                    </ol>
+                </div>
+                <div class="term">
+                    <pre>Switch#show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------
+1    default                          active    Fa0/1
+10   Faculty                          active    Fa0/2, Fa0/3, Fa0/4
+20   Students                         active    Fa0/5
+
+Switch#show interfaces trunk
+Port      Mode  Encapsulation  Status    Native vlan
+Gig0/1    on    802.1q         trunking  1
+
+Port      Vlans allowed on trunk
+Gig0/1    10,20</pre>
+                </div>
+                <div class="tip">💡 Trunk carries many VLANs on ONE link using 802.1Q tagging. Cross-VLAN traffic needs
+                    router-on-a-stick (sub-interfaces).</div>
+                <p><b>Result:</b> VLANs + trunk configured &amp; verified.</p>
+            </div>
+        </div>
+
+        <!-- EXP 9 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">9</span>
+                <h3>2E — MAC Address via ARP</h3><label onclick="event.stopPropagation()"><input type="checkbox"
+                        class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-easy">⭐ EASY</span>
+                <h4>Aim</h4>
+                <p>Retrieve MAC of a device using ARP.</p>
+                <div class="topo">
+                    <pre>   [PC0]            [PC1]
+192.168.1.1     192.168.1.2
+      \             /
+       ┌──────────────┐
+       │   Switch0    │
+       └──────────────┘</pre>
+                </div>
+                <div class="steps"><b>📸 How to get the OUTPUT (screenshot #1):</b>
+                    <ol>
+                        <li>PC0 → Command Prompt → <b>ping 192.168.1.2</b> (this CREATES the ARP entry!)</li>
+                        <li>Then type <b>arp -a</b> → table appears → screenshot 📸</li>
+                        <li>Bonus: PC1 → Config → FastEthernet0 → MAC is shown at bottom — compare!</li>
+                    </ol>
+                </div>
+                <div class="term">
+                    <pre>C:\&gt;arp -a
+
+  Internet Address      Physical Address      Type
+  192.168.1.2           00-0c-29-aa-bb-cc     dynamic</pre>
+                </div>
+                <div class="tip">💡 ARP = maps IP→MAC. "dynamic" = auto-learned. Ping first — without it the table is
+                    EMPTY ("No ARP Entries Found").</div>
+                <p><b>Result:</b> MAC of PC1 retrieved using ARP on PC0.</p>
+            </div>
+        </div>
+
+        <!-- EXP 10 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">10</span>
+                <h3>3a — Network Topology (2PCs, 2SW, 1R)</h3><label onclick="event.stopPropagation()"><input
+                        type="checkbox" class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-easy">⭐⭐ EASY</span>
+                <h4>Aim</h4>
+                <p>Topology PC0—SW0—R0—SW1—PC1; static IPs; inter-network ping.</p>
+                <div class="topo">
+                    <pre>[PC0]──[SW0]──[Router0]──[SW1]──[PC1]
+.1.10          Gi0/0  Gi0/1         .2.10
+GW .1.1      192.168.1.1  192.168.2.1   GW .2.1</pre>
+                </div>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — Router0</button>
+                    <pre>enable
+configure terminal
+interface gigabitEthernet 0/0
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+interface gigabitEthernet 0/1
+ip address 192.168.2.1 255.255.255.0
+no shutdown
+exit
+exit
+write</pre>
+                </div>
+                <div class="steps"><b>📸 How to get the OUTPUT:</b>
+                    <ol>
+                        <li>PC0: 192.168.1.10, GW <b>192.168.1.1</b> | PC1: 192.168.2.10, GW <b>192.168.2.1</b></li>
+                        <li>Wait for ALL links green</li>
+                        <li>PC0 → Command Prompt → <b>ping 192.168.2.10</b> → screenshot</li>
+                    </ol>
+                </div>
+                <div class="term">
+                    <pre>C:\&gt;ping 192.168.2.10
+
+Pinging 192.168.2.10 with 32 bytes of data:
+
+Reply from 192.168.2.10: bytes=32 time=1ms TTL=127
+Reply from 192.168.2.10: bytes=32 time&lt;1ms TTL=127
+Reply from 192.168.2.10: bytes=32 time&lt;1ms TTL=127
+Reply from 192.168.2.10: bytes=32 time&lt;1ms TTL=127
+
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)</pre>
+                </div>
+                <div class="tip">💡 TTL=127 = ONE router hop (128−1). GW on PCs is MANDATORY here — without it
+                    cross-network ping fails.</div>
+                <p><b>Result:</b> PC0 reached PC1 through the router.</p>
+            </div>
+        </div>
+
+        <!-- EXP 11 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">11</span>
+                <h3>3b — Simple Static Routing</h3><label onclick="event.stopPropagation()"><input type="checkbox"
+                        class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-med">⭐⭐ EASY-MED</span><span class="tag t-th">EXAM FAVORITE</span>
+                <h4>Aim</h4>
+                <p>Static routes between 2 networks via 2 routers.</p>
+                <div class="topo">
+                    <pre>[PC0]──[SW0]──[Router0]══[Router1]──[SW1]──[PC1]
+.1.10         G0/0:192.168.1.1   192.168.2.1 G0/0: .2.10
+GW .1.1       G0/1: 10.0.0.1 ══ 10.0.0.2 :G0/1    GW .2.1
+              └── 10.0.0.0/30 crossover ──┘</pre>
+                </div>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — Router0</button>
+                    <pre>enable
+configure terminal
+interface gigabitEthernet 0/0
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+interface gigabitEthernet 0/1
+ip address 10.0.0.1 255.255.255.252
+no shutdown
+exit
+ip route 192.168.2.0 255.255.255.0 10.0.0.2
+exit</pre>
+                </div>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — Router1</button>
+                    <pre>enable
+configure terminal
+interface gigabitEthernet 0/0
+ip address 192.168.2.1 255.255.255.0
+no shutdown
+exit
+interface gigabitEthernet 0/1
+ip address 10.0.0.2 255.255.255.252
+no shutdown
+exit
+ip route 192.168.1.0 255.255.255.0 10.0.0.1
+exit</pre>
+                </div>
+                <div class="steps"><b>📸 How to get the OUTPUT (3 screenshots):</b>
+                    <ol>
+                        <li>Router0 CLI → <b>show ip route</b> → must see <b>S 192.168.2.0/24 via 10.0.0.2</b> →
+                            screenshot</li>
+                        <li>PC0 → <b>ping 192.168.2.10</b> → screenshot</li>
+                        <li>PC1 → <b>ping 192.168.1.10</b> → screenshot</li>
+                    </ol>
+                </div>
+                <div class="term">
+                    <pre>Router0#show ip route
+Codes: C - connected, S - static ...
+
+C    10.0.0.0/30 is directly connected, GigabitEthernet0/1
+C    192.168.1.0/24 is directly connected, GigabitEthernet0/0
+S    192.168.2.0/24 [1/0] via 10.0.0.2
+
+C:\&gt;ping 192.168.2.10
+Reply from 192.168.2.10: bytes=32 time=1ms TTL=127  (×4, 0% loss)</pre>
+                </div>
+                <div class="tip">💡 Formula: <b>ip route &lt;dest-network&gt; &lt;mask&gt; &lt;next-hop&gt;</b>.
+                    S=static (manual), C=connected. Static = no overhead but doesn't adapt to failure (viva!).</div>
+                <p><b>Result:</b> Static routing configured; networks communicated.</p>
+            </div>
+        </div>
+
+        <!-- EXP 12 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">12</span>
+                <h3>3C — Router &amp; Switch Security</h3><label onclick="event.stopPropagation()"><input
+                        type="checkbox" class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-easy">⭐⭐ EASY</span>
+                <h4>Aim</h4>
+                <p>Basic security: passwords, encryption, banner, port shutdown.</p>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — Router R1</button>
+                    <pre>enable
+configure terminal
+enable secret cisco123
+line console 0
+password conpass
+login
+exit
+line vty 0 4
+password vtypass
+login
+exit
+service password-encryption
+banner motd #Unauthorized Access is Prohibited!#</pre>
+                </div>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — Switch SW1 (+ shutdown ports)</button>
+                    <pre>enable
+configure terminal
+enable secret cisco123
+line console 0
+password conpass
+login
+exit
+line vty 0 4
+password vtypass
+login
+exit
+service password-encryption
+banner motd #Access restricted to authorized personnel only#
+interface range fastEthernet 0/10 - 24
+shutdown
+exit</pre>
+                </div>
+                <div class="steps"><b>📸 How to get the OUTPUT (3 screenshots):</b>
+                    <ol>
+                        <li>Router → <b>show running-config</b> → screenshot (passwords now SCRAMBLED like $1$mERr$ =
+                            encrypted!)</li>
+                        <li>Router → try <b>exit</b> then re-enter → <b>BANNER appears before login prompt</b> →
+                            screenshot</li>
+                        <li>Switch → <b>show interfaces status</b> → Fa0/10–24 show "disabled" → screenshot</li>
+                        <li>Bonus viva demo: exit to Router&gt; → type enable → it asks for the secret password</li>
+                    </ol>
+                </div>
+                <div class="term">
+                    <pre>Router#show running-config
+...
+enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0
+...
+line con 0
+ password 7 08314D5D1A0E
+ login
+line vty 0 4
+ password 7 08314D5D1A0E
+ login
+banner motd ^CUnauthorized Access is Prohibited!^C
+
+Switch#show interfaces status
+Port    Status       Vlan
+Fa0/9   connected    1
+Fa0/10  disabled     1    ← shut down (unused)
+Fa0/11  disabled     1</pre>
+                </div>
+                <div class="tip">💡 "5 $1$mERr$..." = MD5-hashed enable secret. "7 0831..." = Type-7 from service
+                    password-encryption. Banner shows BEFORE password prompt.</div>
+                <p><b>Result:</b> Security configured &amp; verified.</p>
+            </div>
+        </div>
+
+        <!-- EXP 13 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">13</span>
+                <h3>3d — OSPF (Link-State Routing)</h3><label onclick="event.stopPropagation()"><input type="checkbox"
+                        class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-med">⭐⭐⭐ MEDIUM</span><span class="tag t-th">EXAM FAVORITE</span>
+                <h4>Aim</h4>
+                <p>OSPF — routers learn routes AUTOMATICALLY (vs static).</p>
+                <div class="topo">
+                    <pre>[PC0]──[R1]═══ 10.0.0.0/30 ═══[R2]──[PC1]
+.1.10   │ G0/0:192.168.1.1 │  G0/0:192.168.2.1 :.2.10
+GW .1.1 │ G0/1: 10.0.0.1   │  10.0.0.2 :G0/1  GW .2.1
+        └── OSPF area 0 ───┘</pre>
+                </div>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — Router1 (interfaces+OSPF)</button>
+                    <pre>enable
+configure terminal
+interface g0/0
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+interface g0/1
+ip address 10.0.0.1 255.255.255.252
+no shutdown
+exit
+router ospf 1
+network 192.168.1.0 0.0.0.255 area 0
+network 10.0.0.0 0.0.0.3 area 0
+exit</pre>
+                </div>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — Router2 (interfaces+OSPF)</button>
+                    <pre>enable
+configure terminal
+interface g0/0
+ip address 192.168.2.1 255.255.255.0
+no shutdown
+exit
+interface g0/1
+ip address 10.0.0.2 255.255.255.252
+no shutdown
+exit
+router ospf 1
+network 192.168.2.0 0.0.0.255 area 0
+network 10.0.0.0 0.0.0.3 area 0
+exit</pre>
+                </div>
+                <div class="steps"><b>📸 How to get the OUTPUT (3 screenshots):</b>
+                    <ol>
+                        <li>Router1 CLI → <b>show ip ospf neighbor</b> → wait ~30s → must show state <b>FULL/DR</b> →
+                            screenshot 🏆</li>
+                        <li>Then → <b>show ip route</b> → must see <b>O 192.168.2.0/24</b> (O = OSPF-learned!) →
+                            screenshot</li>
+                        <li>PC0 → <b>ping 192.168.2.10</b> → 4 replies → screenshot</li>
+                    </ol>
+                </div>
+                <div class="term">
+                    <pre>Router1#show ip ospf neighbor
+
+Neighbor ID     Pri   State     Dead Time   Address    Interface
+10.0.0.2          1   FULL/DR   00:00:33    10.0.0.2   GigabitEthernet0/1
+
+Router1#show ip route
+C    10.0.0.0/30 is directly connected, GigabitEthernet0/1
+C    192.168.1.0/24 is directly connected, GigabitEthernet0/0
+O    192.168.2.0/24 [110/2] via 10.0.0.2, GigabitEthernet0/1
+
+C:\&gt;ping 192.168.2.10
+Reply from 192.168.2.10: bytes=32 time=1ms TTL=127 (×4, 0% loss)</pre>
+                </div>
+                <div class="warn">⚠️ OSPF uses WILDCARD masks (inverse of subnet): 255.255.255.0 → 0.0.0.255 • /30 link
+                    → 0.0.0.3</div>
+                <div class="tip">💡 FULL/DR = neighbor adjacency complete. OSPF floods link-state info → builds map →
+                    runs <b>Dijkstra's shortest-path</b>. Dynamic = adapts to failures.</div>
+                <p><b>Result:</b> OSPF configured; routes learned dynamically.</p>
+            </div>
+        </div>
+
+        <!-- EXP 14 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">14</span>
+                <h3>3e — NS2 Study + Congestion Simulation</h3><label onclick="event.stopPropagation()"><input
+                        type="checkbox" class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-th">THEORY+TCL</span>
+                <h4>Aim</h4>
+                <p>Study NS2; simulate TCP congestion control.</p>
+                <div class="topo">
+                    <pre>    [n0]───10Mb───[n1]───1Mb───[n2]
+      │            │             │
+     TCP Reno   bottleneck!    TCPSink
+      └────── FTP traffic ──────┘
+  1Mb link fills → queue (limit 10) overflows → packets DROPPED</pre>
+                </div>
+                <h4>Key theory (viva)</h4>
+                <ul>
+                    <li>NS2 = open-source, <b>discrete-event</b>, CLI simulator; runs on FreeBSD/Linux/Solaris/Win/Mac
+                    </li>
+                    <li><b>Trace file (out.tr)</b> logs every packet/event; <b>NAM</b> = animation</li>
+                    <li>Others: OPNET, NetSim (proprietary)</li>
+                    <li><b>Throughput</b> = successful delivery rate (bit/s) • <b>Delay</b> = src→dst time • <b>Packet
+                            loss</b> = queue overflow</li>
+                    <li>3 error types: packet loss, bit error, spurious packets</li>
+                </ul>
+                <div class="cmd"><button class="copy" onclick="cp(this)">Copy — tcp.tcl</button>
+                    <pre>set ns [new Simulator]
+set nf [open out.nam w]
+ $ns namtrace-all $nf
+set tr [open out.tr w]
+ $ns trace-all $tr
+set n0 [$ns node]
+set n1 [$ns node]
+set n2 [$ns node]
+ $ns duplex-link $n0 $n1 10Mb 10ms DropTail
+ $ns duplex-link $n1 $n2 1Mb 20ms DropTail
+ $ns queue-limit $n1 $n2 10
+set tcp [new Agent/TCP/Reno]
+set sink [new Agent/TCPSink]
+ $ns attach-agent $n0 $tcp
+ $ns attach-agent $n2 $sink
+ $ns connect $tcp $sink
+set ftp [new Application/FTP]
+ $ftp attach-agent $tcp
+proc finish {} {
+ global ns nf tr
+ $ns flush-trace
+ close $nf
+ close $tr
+ exec nam out.nam &
+ exit 0
+}
+ $ns at 0.5 "$ftp start"
+ $ns at 10.0 "$ftp stop"
+ $ns at 10.5 "finish"
+ $ns run</pre>
+                </div>
+                <div class="steps"><b>📸 How to get the OUTPUT:</b>
+                    <ol>
+                        <li>Save script as <b>tcp.tcl</b> → terminal: <b>ns tcp.tcl</b> → NAM window opens (animation!)
+                            → screenshot</li>
+                        <li>Open <b>out.tr</b> in text editor → screenshot lines containing <b>d</b> (dropped packets =
+                            congestion proof!)</li>
+                        <li>Count d-lines = packet loss; measure r-lines over time = throughput</li>
+                    </ol>
+                </div>
+                <div class="term">
+                    <pre>(out.tr — trace file lines)
++ 0.5    0    1   tcp 1040 ---- 1 0.0.0.0 2.0.0.0 0 0
+- 0.5    0    1   tcp 1040 ---- 1 0.0.0.0 2.0.0.0 0 0
+r 0.51   0    1   tcp 1040 ---- 1 0.0.0.0 2.0.0.0 0 0
+d 3.21   1    2   tcp 1040 ---- 1 0.0.0.0 2.0.0.0 57 211 ← DROP
+
+Symbols: + enqueue | - dequeue | r received | d dropped</pre>
+                </div>
+                <p><b>Result:</b> NS2 studied; congestion (drops) observed in trace; throughput/loss/delay analysed.</p>
+            </div>
+        </div>
+
+        <!-- EXP 15 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">15</span>
+                <h3>Case — Network Cables + Crimping</h3><label onclick="event.stopPropagation()"><input type="checkbox"
+                        class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-th">THEORY+PRACTICAL</span>
+                <h4>Cable types</h4>
+                <ul>
+                    <li><b>Twisted pair</b> (UTP Cat5e/6, STP): ~100m, 1 Gbps</li>
+                    <li><b>Coaxial</b>: 200–500m, cable TV</li>
+                    <li><b>Fibre</b>: km+, Gbps+, immune to EMI (SMF=long, MMF=short)</li>
+                </ul>
+                <table>
+                    <tr>
+                        <th>Pin</th>
+                        <th>T568A</th>
+                        <th>T568B</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>White/Green</td>
+                        <td>White/Orange</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Green</td>
+                        <td>Orange</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>White/Orange</td>
+                        <td>White/Green</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Blue</td>
+                        <td>Blue</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>White/Blue</td>
+                        <td>White/Blue</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Orange</td>
+                        <td>Green</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>White/Brown</td>
+                        <td>White/Brown</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>Brown</td>
+                        <td>Brown</td>
+                    </tr>
+                </table>
+                <div class="steps"><b>📸 How to get the OUTPUT (cable tester):</b>
+                    <ol>
+                        <li>Crimp cable (7 steps: cut→strip 25mm→untwist/arrange→trim 12mm→insert RJ45
+                            clip-down→crimp→test)</li>
+                        <li>Plug into <b>cable tester</b> → LEDs light in sequence → screenshot/note pattern</li>
+                        <li><b>Straight:</b> LEDs 1-1, 2-2, 3-3 … 8-8 (same numbers)</li>
+                        <li><b>Crossover:</b> LEDs 1-3, 2-6, 3-1, 6-2, rest same (swapped pins!)</li>
+                    </ol>
+                </div>
+                <div class="term">
+                    <pre>CABLE TESTER
+Straight-through:  1↔1 2↔2 3↔3 4↔4 5↔5 6↔6 7↔7 8↔8   ✅ PASS
+Crossover:         1↔3 2↔6 3↔1 4↔4 5↔5 6↔2 7↔7 8↔8   ✅ PASS
+(crossover = pins 1↔3 and 2↔6 swapped, orange↔green)</pre>
+                </div>
+                <div class="tip">💡 Straight = DIFFERENT devices (PC↔Switch). Crossover = SAME devices (PC↔PC, SW↔SW).
+                    Modern ports have auto MDI-X.</div>
+                <p><b>Result:</b> Both cables made &amp; verified with tester.</p>
+            </div>
+        </div>
+
+        <!-- EXP 16 -->
+        <div class="exp">
+            <div class="ehead" onclick="tg(this)"><span class="num">16</span>
+                <h3>Case 2 — Network Devices (OSI)</h3><label onclick="event.stopPropagation()"><input type="checkbox"
+                        class="done" onchange="track()"></label><span class="arrow">▾</span>
+            </div>
+            <div class="ebody">
+                <span class="tag t-th">THEORY — MEMORIZE</span>
+                <table>
+                    <tr>
+                        <th>Device</th>
+                        <th>Function</th>
+                        <th>OSI</th>
+                        <th>Use</th>
+                    </tr>
+                    <tr>
+                        <td><b>Hub</b></td>
+                        <td>Broadcasts to ALL ports</td>
+                        <td>L1</td>
+                        <td>Obsolete</td>
+                    </tr>
+                    <tr>
+                        <td><b>Repeater</b></td>
+                        <td>Amplifies signal</td>
+                        <td>L1</td>
+                        <td>Extend range</td>
+                    </tr>
+                    <tr>
+                        <td><b>Bridge</b></td>
+                        <td>Filters 2 segments</td>
+                        <td>L2</td>
+                        <td>Segmentation</td>
+                    </tr>
+                    <tr>
+                        <td><b>Switch</b></td>
+                        <td>Forwards by MAC</td>
+                        <td>L2</td>
+                        <td>Efficient LAN</td>
+                    </tr>
+                    <tr>
+                        <td><b>Router</b></td>
+                        <td>Routes by IP</td>
+                        <td>L3</td>
+                        <td>LAN→Internet</td>
+                    </tr>
+                    <tr>
+                        <td><b>Gateway</b></td>
+                        <td>Protocol translator</td>
+                        <td>All/L3</td>
+                        <td>Dissimilar nets</td>
+                    </tr>
+                    <tr>
+                        <td><b>AP</b></td>
+                        <td>Wi-Fi</td>
+                        <td>L2</td>
+                        <td>Wireless</td>
+                    </tr>
+                    <tr>
+                        <td><b>Firewall</b></td>
+                        <td>Security rules</td>
+                        <td>L3&amp;4</td>
+                        <td>Protection</td>
+                    </tr>
+                    <tr>
+                        <td><b>Brouter</b></td>
+                        <td>Bridge+Router</td>
+                        <td>L2&amp;3</td>
+                        <td>Mixed</td>
+                    </tr>
+                    <tr>
+                        <td><b>NIC</b></td>
+                        <td>Physical interface</td>
+                        <td>L2</td>
+                        <td>Connectivity</td>
+                    </tr>
+                </table>
+                <div class="steps"><b>📸 How to get the OUTPUT:</b>
+                    <ol>
+                        <li>This is theory — the "output" = the completed table above, written in your record</li>
+                        <li>Bonus PT demo: hover any device in Packet Tracer → tooltip shows its model/type</li>
+                    </ol>
+                </div>
+                <div class="tip">💡 Group-trick: <b>L1 = dumb</b> (Hub, Repeater) • <b>L2 = smart-local</b> (Bridge,
+                    Switch, AP, NIC) • <b>L3+ = global</b> (Router, Gateway, Firewall)</div>
+                <p><b>Result:</b> Devices &amp; OSI roles studied.</p>
+            </div>
+        </div>
+
+        <!-- CHEAT -->
+        <div class="cheat">
+            <h3>⚡ GOLDEN RULES</h3>
+            <ul>
+                <li>🥇 Every router config: enable → conf t → int x → ip address → <b>no shutdown</b></li>
+                <li>🥈 <b>Never type the prompt</b> — type only what's AFTER "Router(config)#"</li>
+                <li>🥉 <b>^ Invalid input</b> = wrong MODE 90% of the time — check your prompt first</li>
+                <li>📏 Static: <b>ip route &lt;dest&gt; &lt;mask&gt; &lt;next-hop&gt;</b> • OSPF: <b>router ospf 1</b> →
+                    network &lt;net&gt; &lt;WILDCARD&gt; area 0</li>
+                <li>🔌 Different devices = straight-through • Same devices = crossover</li>
+                <li>⏱️ First-ping timeout = ARP, normal → ping again</li>
+                <li>📡 <b>TTL decoder:</b> 128=PC • 255=router itself • 127=1 hop • 126=2 hops • 125=3 hops</li>
+                <li>🖥️ Serial: HWIC-2T module (1941) + clock rate 64000 on DCE side only</li>
+                <li>🔑 VPN: IPs→ISAKMP→key→transform-set→crypto map→ACL→apply→verify (QM_IDLE+ACTIVE)</li>
+                <li>💾 Save: <b>copy run start</b> / <b>write</b></li>
+            </ul>
+        </div>
+
+    </main>
+    <footer>CN Lab Master v2 • SCSB2501 • 16 Experiments • Offline • viva-ready 🚀</footer>
+
+    <script>
+        function tg(h) { h.parentElement.classList.toggle('open') }
+        function toggleAll() { var c = document.querySelectorAll('.exp'); var anyClosed = [...c].some(x => !x.classList.contains('open')); c.forEach(x => x.classList.toggle('open', anyClosed)) }
+        function cp(b) { var t = b.parentElement.querySelector('pre').innerText; if (navigator.clipboard) { navigator.clipboard.writeText(t).then(() => { b.textContent = '✅ Copied'; setTimeout(() => b.textContent = 'Copy', 1200) }) } else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); b.textContent = '✅ Copied'; setTimeout(() => b.textContent = 'Copy', 1200) } }
+        document.getElementById('search').addEventListener('input', function () { var q = this.value.toLowerCase(); document.querySelectorAll('.exp').forEach(function (e) { e.style.display = e.textContent.toLowerCase().includes(q) ? '' : 'none' }) });
+        function track() { var all = document.querySelectorAll('.done'); var n = [...all].filter(x => x.checked).length; document.getElementById('pfill').style.width = (n / all.length * 100) + '%'; document.getElementById('ptxt').textContent = 'Progress: ' + n + ' / ' + all.length + ' completed' + (n === all.length ? ' — 🎉 EXAM READY!' : ''); localStorage.setItem('cndone', JSON.stringify([...all].map(x => x.checked))) }
+        function toggleTheme() { document.body.classList.toggle('dark'); localStorage.setItem('cntheme', document.body.classList.contains('dark') ? 'd' : 'l') }
+        (function () { if (localStorage.getItem('cntheme') === 'd') document.body.classList.add('dark'); var s = JSON.parse(localStorage.getItem('cndone') || '[]'); document.querySelectorAll('.done').forEach((x, i) => { if (s[i]) x.checked = true }); track() })();
+    </script>
+</body>
+
+</html>
